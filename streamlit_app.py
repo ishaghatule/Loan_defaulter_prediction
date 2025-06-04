@@ -35,9 +35,11 @@ feature_defaults = {
 }
 
 # Derived features calculator
-def compute_derived_features(inputs):
+def compute_derived_features(inputs: dict) -> pd.DataFrame:
+    # Step 1: Create initial DataFrame from user input
     df = pd.DataFrame([inputs])
 
+    # Step 2: Derived features from user inputs
     df['ChargedOff_Amount_Clean'] = df['ChargedOff_Amount']
     df['Loan_Approved_Gross_Clean'] = df['Loan_Approved_Gross']
     df['Gross_Amount_Disbursed_Clean'] = df['Gross_Amount_Disbursed']
@@ -48,12 +50,20 @@ def compute_derived_features(inputs):
     df['Year_Of_Commitment'] = pd.to_numeric(df['Year_Of_Commitment'])
     df['Commitment_Date'] = pd.to_datetime(df['Commitment_Date'])
     df['Date_Of_Disbursement'] = pd.to_datetime(df['Date_Of_Disbursement'])
+
     df['Loan_Age_Days'] = (pd.Timestamp.today() - df['Date_Of_Disbursement']).dt.days
     df['Processing_Delay_Days'] = (df['Date_Of_Disbursement'] - df['Commitment_Date']).dt.days
     df['Commitment_to_Disbursement_Ratio'] = df['Processing_Delay_Days'] / df['Loan_Age_Days']
 
-    # Final feature list must match training
+    # Step 3: Get expected features from model
     expected_features = xgb_model.get_booster().feature_names
+
+    # Step 4: Fill in all remaining missing columns with default values (0 or mode/median if known)
+    for col in expected_features:
+        if col not in df.columns:
+            df[col] = 0  # Or replace with actual known default if available
+
+    # Step 5: Return final aligned input
     return df[expected_features]
 
 # Tab setup
