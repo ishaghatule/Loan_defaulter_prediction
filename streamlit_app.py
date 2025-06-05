@@ -108,23 +108,39 @@ with tabs[0]:
 
 # Tab 2: Dashboard
 with tabs[1]:
-    st.title("📊 Dashboard - Feature Insights")
+    st.title("📊 Dashboard - Loan Feature Insights")
 
-    st.write("### Feature Importance - Frequency")
-    fig1, ax1 = plt.subplots()
-    xgb.plot_importance(xgb_model, ax=ax1, importance_type='weight', max_num_features=10)
-    st.pyplot(fig1)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("### Default Rate by Classification Code")
+        fig1, ax1 = plt.subplots()
+        sns.barplot(data=sample_df, x='Classification_Code', y='Default', ci=None, ax=ax1)
+        ax1.set_ylabel("Default Rate")
+        st.pyplot(fig1)
 
-    st.write("### Feature Importance - Gain")
-    fig2, ax2 = plt.subplots()
-    xgb.plot_importance(xgb_model, ax=ax2, importance_type='gain', max_num_features=10)
-    st.pyplot(fig2)
+    with col2:
+        st.write("### Distribution of Loan Age Days")
+        fig2, ax2 = plt.subplots()
+        sns.histplot(sample_df['Loan_Age_Days'], bins=20, kde=True, ax=ax2)
+        st.pyplot(fig2)
 
-    st.write("### Feature Importance - Coverage")
-    fig3, ax3 = plt.subplots()
-    xgb.plot_importance(xgb_model, ax=ax3, importance_type='cover', max_num_features=10)
-    st.pyplot(fig3)
+    col3, col4 = st.columns(2)
+    with col3:
+        st.write("### ChargedOff_to_Approved by State")
+        fig3, ax3 = plt.subplots()
+        sns.boxplot(data=sample_df, x='State_Of_Bank', y='ChargedOff_to_Approved', ax=ax3)
+        st.pyplot(fig3)
+
+    with col4:
+        st.write("### Disbursed vs Charged Off Ratio")
+        fig4, ax4 = plt.subplots()
+        sns.scatterplot(data=sample_df, x='Disbursed_to_Approved', y='ChargedOff_to_Approved', hue='Default', ax=ax4)
+        st.pyplot(fig4)
+
+    st.write("### Feature Correlation Heatmap")
+    fig5, ax5 = plt.subplots(figsize=(10, 6))
+    sns.heatmap(sample_df.corr(), annot=True, cmap='coolwarm', ax=ax5)
+    st.pyplot(fig5)
 
     st.markdown("---")
-    st.write("**Note**: These visualizations show how frequently and effectively different features are used across all trees in the model.")
-
+    st.caption("Visual insights generated from simulated data. Plug in your own data for real-world use.")
