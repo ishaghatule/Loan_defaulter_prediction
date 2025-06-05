@@ -112,39 +112,41 @@ with tabs[0]:
 # Tab 2 - Dashboard
 with tabs[1]:
     st.title("📊 Dashboard - Loan Feature Insights")
+    st.caption("Subtle visualizations based on sample data")
 
     col1, col2 = st.columns(2)
     with col1:
-        st.write("### Default Rate by Classification Code")
+        st.markdown("#### Default Rate by Classification Code")
         fig1, ax1 = plt.subplots()
         grouped = sample_data.groupby('Classification_Code')['Default'].mean().reset_index()
-        sns.barplot(data=grouped, x='Classification_Code', y='Default', ax=ax1)
+        sns.barplot(data=grouped, x='Classification_Code', y='Default', ax=ax1, palette='pastel')
         ax1.set_ylabel("Average Default Rate")
         st.pyplot(fig1)
 
     with col2:
-        st.write("### Distribution of Loan Age Days")
+        st.markdown("#### Distribution of Loan Age Days")
         fig2, ax2 = plt.subplots()
-        sns.histplot(sample_data['Loan_Age_Days'], bins=20, kde=True, ax=ax2)
+        sns.histplot(sample_data['Loan_Age_Days'], bins=20, kde=True, color='#86bf91', ax=ax2)
+        ax2.set_xlabel("Loan Age (days)")
         st.pyplot(fig2)
 
     col3, col4 = st.columns(2)
     with col3:
-        st.write("### ChargedOff_to_Approved by State")
+        st.markdown("#### ChargedOff_to_Approved by State")
         fig3, ax3 = plt.subplots()
-        sns.boxplot(data=sample_data, x='State_Of_Bank', y='ChargedOff_to_Approved', ax=ax3)
+        sns.boxplot(data=sample_data, x='State_Of_Bank', y='ChargedOff_to_Approved', palette='Set3', ax=ax3)
         st.pyplot(fig3)
 
     with col4:
-        st.write("### Disbursed vs Charged Off Ratio")
+        st.markdown("#### Disbursed vs Charged Off Ratio")
         fig4, ax4 = plt.subplots()
-        sns.scatterplot(data=sample_data, x='Disbursed_to_Approved', y='ChargedOff_to_Approved', hue='Default', ax=ax4)
+        sns.scatterplot(data=sample_data, x='Disbursed_to_Approved', y='ChargedOff_to_Approved', hue='Default', palette='coolwarm', ax=ax4)
         st.pyplot(fig4)
 
-    st.write("### Feature Correlation Heatmap")
+    st.markdown("#### Feature Correlation Heatmap")
     fig5, ax5 = plt.subplots(figsize=(10, 6))
     corr = sample_data.corr(numeric_only=True)
-    sns.heatmap(corr, annot=True, cmap='coolwarm', ax=ax5)
+    sns.heatmap(corr, annot=True, cmap='YlGnBu', fmt=".2f", ax=ax5, linewidths=0.5)
     st.pyplot(fig5)
 
     st.markdown("---")
