@@ -112,7 +112,6 @@ with tabs[0]:
 # Tab 2 - Dashboard
 with tabs[1]:
     st.title("📊 Dashboard - Loan Feature Insights")
-    st.caption("Subtle visualizations based on sample data")
 
     col1, col2 = st.columns(2)
     with col1:
